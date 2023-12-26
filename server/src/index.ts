@@ -2,6 +2,7 @@ import express,{Application} from "express"
 import {logger} from "./config/pino"
 import cors from "cors"
 import userRouter from "./routes/user.router"
+import fileUpload from "express-fileupload"
 import productRouter from "./routes/product.route"
 import categoryRouter from "./routes/category.router"
 import db from "./config/Database"
@@ -17,10 +18,10 @@ const corsOptions = {
 }
 
 app.use(express.json())
-app.use(express.static("public"))
+app.use(express.static("./public"))
 app.use(cors(corsOptions))
 app.use(cookieParser())
-
+app.use(fileUpload())
 app.use(userRouter)
 app.use(productRouter)
 app.use(categoryRouter
