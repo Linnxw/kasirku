@@ -5,6 +5,7 @@ import userRouter from "./routes/user.router"
 import fileUpload from "express-fileupload"
 import productRouter from "./routes/product.route"
 import categoryRouter from "./routes/category.router"
+import transactionRouter from "./routes/transaction.router"
 import db from "./config/Database"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
@@ -22,10 +23,14 @@ app.use(express.static("./public"))
 app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(fileUpload())
+
+
 app.use(userRouter)
 app.use(productRouter)
 app.use(categoryRouter
 )
+app.use(transactionRouter)
+
 app.listen(process.env.PORT || 6060,()=>{
   logger.info("server runing")
 })
