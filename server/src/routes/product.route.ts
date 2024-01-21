@@ -4,8 +4,9 @@ import {verifyLogin} from "../middleware/verifyLogin"
 const router: Router = Router()
 
 router.get("/products",getProducts)
-router.post("/product",verifyLogin,addProduct)
 router.get("/product/:id",getProductById)
+router.use(verifyLogin)
+router.post("/product",addProduct)
 router.patch("/product/:id",editProduct)
 router.post("/product/stock/:id",addStockProduct)
 

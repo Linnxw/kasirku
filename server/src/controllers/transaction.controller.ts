@@ -8,7 +8,7 @@ import {unlinkSync} from "fs"
 import {IDecodeUser,IUser,IRequestUser} from "../types"
 
 export const getTransactions = (req:Request,res:Response)=>{
-  db.query("SELECT * FROM riwayat",(err:any,data:any)=>{
+  db.query("SELECT * FROM riwayat ORDER BY riwayatId DESC",(err:any,data:any)=>{
     if(err){
       logger.error(err)
       return res.status(500).json({status:false,msg:err.message})
@@ -42,19 +42,21 @@ export const addShelling = (req:Request,res:Response) =>{
     if(!data.length)
     return responseErr(res,404,"Product not found")
     const dataProduct = data[0]
-    
+    if(dataProduct.qty < 1){
+      return responseErr(res,400,"Product sold out")
+    }
     if(cash < dataProduct.price * qty){
     return responseErr(res,400,"Cash not enought")
   }
  
  let change: number = cash - (dataProduct.price * qty)
-
   db.beginTransaction((err)=>{
    if(err){
         console.log(err)
         return responseErr(res,500,err.message)
     }
-    const qProduct = "UPDATE products SET qty = qty - ? WHERE productId = ?"
+    const qProduct = dataProduct.qty - parseInt(qty) === 0 ? "UPDATE products SET qty = 0 WHERE productId = ?" :  "UPDATE products SET qty = qty - ? WHERE productId = ?"
+  
     db.query(qProduct,[qty,req.params.id],(err:any,data:any)=>{
       if(err){
         console.log(err)
